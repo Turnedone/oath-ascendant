@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Idle Hunter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script type="module" crossorigin src="/idle-hunter-demo/assets/main-C24NYkRt.js"></script>
+    <link rel="stylesheet" crossorigin href="/idle-hunter-demo/assets/main-Crm_48y3.css">
+  </head>
+  <body>
+    <div id="splash"><div class="sp-title">Idle Hunter</div><div class="sp-line">The fields are waiting</div><div class="sp-bar"><div></div></div></div>
+    <div id="app">
+      <div id="game-root"></div>
+
+      <!-- DOM HUD overlay, layered on top of the Phaser canvas -->
+      <div id="hud">
+        <!-- Left column: the hunter, the current goal, the auto-hunt pill -->
+        <div id="hud-left" class="hud-col left">
+          <section id="unit-frame" class="frame unit">
+            <div class="portrait">
+              <img id="portrait" class="px" alt="" />
+              <span class="lvl" id="stat-level" title="Level">1</span>
+            </div>
+            <div class="unit-body">
+              <div class="unit-name"><span id="unit-name">Hunter</span><span id="unit-class" class="unit-class"></span></div>
+              <div class="bar hp"><div id="hp-ghost" class="ghost"></div><div id="hp-fill" class="fill"></div><span id="hp-text" class="bar-text">0 / 0</span></div>
+              <div class="bar mp" title="Mana: skills spend it, it refills over time"><div id="mp-fill" class="fill"></div><span id="mp-text" class="bar-text"></span></div>
+              <div class="unit-sub" id="unit-sub"></div>
+            </div>
+          </section>
+
+          <section id="goal-card" class="goal-card">
+            <div class="goal-head"><span class="diamond"></span><span id="goal-text" class="goal-text"></span></div>
+            <div class="goal-hint" id="goal-hint"></div>
+            <div class="forge-bar"><div id="goal-fill"></div></div>
+            <div class="goal-meta"><span id="goal-progress"></span><span id="goal-reward"></span></div>
+            <div class="goal-next" id="goal-next"></div>
+          </section>
+
+          <section id="hunt-ctl" class="hunt-ctl frame" hidden></section>
+        </div>
+
+        <!-- Location plaque + boss health -->
+        <section class="plaque">
+          <div class="plaque-region" id="place-region"></div>
+          <div class="place-name" id="place-name">—</div>
+          <div class="place-status" id="place-status"></div>
+          <div class="travel-bar" id="travel-bar" hidden><div class="travel-fill" id="travel-fill"></div></div>
+        </section>
+        <section id="boss-bar" class="boss-bar" hidden>
+          <div class="boss-name"><span id="boss-name"></span></div>
+          <div class="bar boss"><div id="boss-fill" class="fill"></div><span id="boss-text" class="bar-text"></span></div>
+        </section>
+
+        <!-- Top right: one bar with the menu and the purse -->
+        <nav id="hud-top-right" class="frame topbar">
+          <div class="menu-bar">
+            <button id="open-map" class="menu-btn" title="World Map (M)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span class="key">M</span></button>
+            <button id="open-bestiary" class="menu-btn" title="Journal: goals, achievements, bestiary, guide (J)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/></svg><span class="key">J</span></button>
+            <button id="open-talents" class="menu-btn" title="Talents and class (T)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4l-5.3 3 1.2-6-4.5-4.1 6-.7z"/></svg><span class="key">T</span><span class="talent-badge" id="talents-badge" hidden>0</span></button>
+            <button id="open-bag" class="menu-btn" title="Bag, supplies and gear (I)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="key">I</span></button>
+            <span class="menu-sep"></span>
+            <button id="toggle-sound" class="menu-btn" title="Sound on/off (N)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path class="mute-x" d="M3 3l18 18"/></svg><span class="key">N</span></button>
+            <button id="arrange-layout" class="menu-btn" title="Arrange windows: drag them where you want"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7"/><rect x="13.5" y="3.5" width="7" height="4"/><rect x="3.5" y="13.5" width="7" height="4"/><rect x="13.5" y="10.5" width="7" height="10"/></svg></button>
+            <button id="open-settings" class="menu-btn" title="Settings and save backup"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
+          </div>
+          <span class="menu-sep"></span>
+          <section class="purse" title="Gold">
+            <span class="coin"></span>
+            <div><b id="stat-gold">0</b><div class="rate" id="gold-rate">+0 /min</div></div>
+          </section>
+        </nav>
+
+        <!-- Right column: the minimap, the bag beneath it -->
+        <div id="hud-right-col" class="hud-col right">
+        <section id="minimap" class="minimap frame"></section>
+
+        <!-- Bag / supplies / gear -->
+        <aside id="hud-right" class="frame">
+          <div class="tabs">
+            <button class="tab active" data-tab="inventory">Bag</button>
+            <button class="tab" data-tab="equipment">Gear</button>
+            <button class="tab" data-tab="vault" title="Heirlooms that survive a rebirth">Vault</button>
+            <button class="panel-close" id="close-bag" title="Hide (I)">×</button>
+          </div>
+          <div id="tab-inventory" class="tab-body">
+            <nav class="bag-filters" id="bag-filters">
+              <button class="bag-filter on" data-bag-filter="all">All</button>
+              <button class="bag-filter" data-bag-filter="gear">Gear</button>
+              <button class="bag-filter" data-bag-filter="supplies" title="Shots, potions, tonics and scrolls, and how they are used">Supplies</button>
+              <button class="bag-filter" data-bag-filter="materials">Materials</button>
+              <button class="bag-filter" data-bag-filter="other">Other</button>
+            </nav>
+            <div id="supplies" class="supplies" hidden></div>
+            <div class="inv-toolbar">
+              <span id="inv-count" class="muted-small">0 / 24 slots</span>
+              <span class="inv-actions">
+                <button id="equip-best" class="btn small" title="Wear the strongest piece you can for each slot">Equip best</button>
+                <button id="sell-materials" class="btn small">Sell materials</button>
+              </span>
+            </div>
+            <div id="inventory-grid" class="grid"></div>
+          </div>
+          <div id="tab-equipment" class="tab-body" hidden>
+            <div id="equipment-slots" class="eq-slots"></div>
+            <div class="derived-stats" id="derived-stats"></div>
+          </div>
+          <div id="tab-vault" class="tab-body" hidden>
+            <div id="vault" class="vault"></div>
+          </div>
+        </aside>
+        </div>
+
+        <section id="town-panel" class="frame" hidden>
+          <div class="town-head">
+            <div>
+              <div class="panel-label">Town</div>
+              <h2 id="town-name">Riverford</h2>
+            </div>
+            <p class="muted-small">Trade, store your loot, then teleport or step back out.</p>
+            <button id="leave-town" class="btn primary">Leave town</button>
+            <button id="town-fold" class="panel-close" title="Fold the window away and see the town">×</button>
+          </div>
+          <div id="town-greet" class="town-greet" hidden></div>
+          <div class="town-tabs">
+            <button class="town-tab active" data-town-tab="shop" title="Vendor, market and selling">Shop</button>
+            <button class="town-tab" data-town-tab="smith" title="Forge recipes and Soulstones (enchanting is in your Gear panel)">Smith</button>
+            <button class="town-tab" data-town-tab="trainer" title="Classes and skills">Trainer</button>
+            <button class="town-tab" data-town-tab="board">Bounties</button>
+            <button class="town-tab" data-town-tab="tower" title="The Tower of Bosses: floors that stay cleared through every rebirth">Tower</button>
+            <button class="town-tab" data-town-tab="stash">Stash</button>
+          </div>
+          <div class="town-body" id="town-shop"></div>
+          <div class="town-body" id="town-smith" hidden></div>
+          <div class="town-body" id="town-trainer" hidden></div>
+          <div class="town-body" id="town-stash" hidden></div>
+          <div class="town-body" id="town-tower" hidden></div>
+          <div class="town-body" id="town-board" hidden></div>
+          <div class="town-teleports" id="town-teleports"></div>
+        </section>
+
+        <!-- Chat-style loot log -->
+        <section id="hud-bottom" class="chat">
+          <div id="loot-log" class="loot-log"></div>
+        </section>
+
+        <!-- Hotbar: skills, then consumables; experience along the top -->
+        <footer id="hotbar" class="hotbar">
+          <div class="xp-strip" title="Experience"><div id="xp-fill" class="xp-fill"></div><span id="xp-text" class="xp-text"></span></div>
+          <div class="frame slots bar2"><div id="bar2-slots" class="slot-group"></div></div>
+          <div class="frame slots">
+            <div id="skill-slots" class="slot-group"></div>
+            <div class="slot-sep"></div>
+            <div class="slot-group">
+              <button class="slot item" id="slot-potion"><img class="px" alt="" /><span class="count"></span><span class="slot-key">auto</span></button>
+              <button class="slot item" id="slot-shots"><img class="px" alt="" /><span class="count"></span><span class="slot-key">auto</span></button>
+              <button class="slot item" id="escape-btn"><img class="px" alt="" /><span class="count" id="escape-count">0</span><span class="slot-key">use</span></button>
+            </div>
+          </div>
+        </footer>
+
+      </div>
+
+      <!-- Offline-progress modal -->
+      <div id="creation-modal" class="modal-backdrop" hidden></div>
+      <div id="offline-modal" class="modal-backdrop" hidden>
+        <div class="modal">
+          <h2>While you were away</h2>
+          <p id="offline-away-time"></p>
+          <ul id="offline-summary"></ul>
+          <button id="offline-close">Continue</button>
+        </div>
+      </div>
+
+      <!-- World map -->
+      <div id="map-modal" class="modal-backdrop" hidden>
+        <div class="map-window" role="dialog" aria-label="World Map">
+          <header class="map-header">
+            <h2>World Map</h2>
+            <span class="muted-small">Click a place to see it, double-click to set off for it. Scroll to zoom, drag to pan.</span>
+            <span class="map-zoom">
+              <button id="map-zoom-out" class="btn small" title="Zoom out">−</button>
+              <button id="map-zoom-in" class="btn small" title="Zoom in">+</button>
+              <button id="map-zoom-fit" class="btn small" title="See the whole world">Whole map</button>
+              <button id="map-zoom-here" class="btn small" title="Zoom to the hunter">Where I am</button>
+            </span>
+            <button id="map-close" class="btn" title="Close (Esc)">Close</button>
+          </header>
+          <div class="map-body">
+            <svg id="map-svg" viewBox="0 0 1500 1100" role="img" aria-label="World map"></svg>
+            <aside id="map-detail" class="map-detail"></aside>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bestiary -->
+      <div id="bestiary-modal" class="modal-backdrop" hidden>
+        <div class="map-window" role="dialog" aria-label="Bestiary">
+          <header class="map-header">
+            <h2>Journal</h2>
+            <div class="journal-tabs">
+              <button class="town-tab active" data-journal="goals">Goals</button>
+              <button class="town-tab" data-journal="achievements">Achievements</button>
+              <button class="town-tab" data-journal="bestiary">Bestiary</button>
+              <button class="town-tab" data-journal="collection" title="Every piece in the world: found, and still to find">Collection</button>
+              <button class="town-tab" data-journal="guide">Guide</button>
+            </div>
+            <button id="bestiary-close" class="btn" title="Close (Esc)">Close</button>
+          </header>
+          <div id="bestiary-body" class="bestiary-body"></div>
+        </div>
+      </div>
+
+      <!-- Talents -->
+      <div id="talents-modal" class="modal-backdrop" hidden>
+        <div class="map-window" role="dialog" aria-label="Talents">
+          <header class="map-header">
+            <h2>Talents</h2>
+            <span id="talents-points" class="muted-small"></span>
+            <button id="talents-respec" class="btn">Reset</button>
+            <button id="talents-close" class="btn" title="Close (Esc)">Close</button>
+          </header>
+          <div id="talents-body" class="bestiary-body"></div>
+        </div>
+      </div>
+
+      <!-- Settings / save backup -->
+      <div id="settings-modal" class="modal-backdrop" hidden>
+        <div class="modal settings">
+          <h2>Settings</h2>
+          <h4>Sound</h4>
+          <div class="sound-row"><label for="vol-music">Music</label><input id="vol-music" type="range" min="0" max="100" step="1" /></div>
+          <div class="sound-row"><label for="vol-sfx">Effects</label><input id="vol-sfx" type="range" min="0" max="100" step="1" /></div>
+          <div class="sound-row"><label for="vol-mute">Mute all (N)</label><input id="vol-mute" type="checkbox" /></div>
+          <h4>Game</h4>
+          <div class="sound-row"><label for="ui-scale" title="Auto follows the window's size">Interface size</label><select id="ui-scale"><option value="auto">Auto</option><option value="0.8">80%</option><option value="0.9">90%</option><option value="1">100%</option><option value="1.1">110%</option><option value="1.2">120%</option><option value="1.3">130%</option></select></div>
+          <div class="sound-row"><label for="show-all" title="Every window and tab from the start, without the gradual introduction">Show everything</label><input id="show-all" type="checkbox" /></div>
+          <div class="settings-row"><button id="change-char" class="btn">Change character</button><button id="replay-intro" class="btn" title="The warden walks you through the basics again">Replay the introduction</button></div>
+          <h4>Back up your save</h4>
+          <p>Copy this text somewhere safe. Paste it back below to restore, or to move your hunter to another browser.</p>
+          <textarea id="save-export" readonly rows="4"></textarea>
+          <div class="settings-row"><button id="save-copy" class="btn">Copy</button></div>
+          <h4>Restore a save</h4>
+          <textarea id="save-import" rows="4" placeholder="Paste a save here"></textarea>
+          <div class="settings-row"><button id="save-load" class="btn primary">Load this save</button></div>
+          <h4>Delete</h4>
+          <div class="settings-row"><button id="save-reset" class="btn danger">Delete this character</button></div>
+          <div class="settings-row end"><button id="settings-close" class="btn">Close</button></div>
+        </div>
+      </div>
+
+      <div id="toasts" class="toasts" aria-live="polite"></div>
+    </div>
+
+  </body>
+</html>
