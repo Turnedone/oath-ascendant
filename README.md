@@ -1,4 +1,4 @@
-# Oathwake — demo
+# Oath Ascendant — demo
 
 An idle RPG: you are one of the Oathsworn, sworn to fight the monsters of the Unbound. Your Oathsworn fights on their own, levels up and finds gear, even while you're away; you choose where to fight and how to grow.
 

@@ -1,29 +1,67 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <!-- The Oathwake mark: an Oathstone, the ring of the Oath carved on it, and a sword set in the stone. -->
+  <!-- The Oath Ascendant mark: a sword rising out of a cracked Oathstone, up through
+       the open ring of the Oath. Dark stone, gold on black; the only light is the
+       Oath's own glow, the ember in the crack, and the point breaking into the dark. -->
   <defs>
-    <radialGradient id="glow" cx="50%" cy="46%" r="52%">
-      <stop offset="0" stop-color="#e6c36f" stop-opacity="0.42"/>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#e6c36f" stop-opacity="0.32"/>
+      <stop offset="0.6" stop-color="#e6c36f" stop-opacity="0.06"/>
       <stop offset="1" stop-color="#e6c36f" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3d3327"/>
-      <stop offset="1" stop-color="#15110c"/>
+      <stop offset="0" stop-color="#2e261c"/>
+      <stop offset="1" stop-color="#0d0a07"/>
     </linearGradient>
     <linearGradient id="blade" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#fff3cc"/>
-      <stop offset="0.5" stop-color="#e6c36f"/>
-      <stop offset="1" stop-color="#9a7838"/>
+      <stop offset="0" stop-color="#f3e1b0"/>
+      <stop offset="0.48" stop-color="#d9b25c"/>
+      <stop offset="0.52" stop-color="#a07c33"/>
+      <stop offset="1" stop-color="#6a4c22"/>
     </linearGradient>
+    <linearGradient id="bladeTip" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffd98a" stop-opacity="0"/>
+      <stop offset="1" stop-color="#fff3cc" stop-opacity="0.8"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
   </defs>
+
+  <!-- the Oath's own glow, nothing brighter -->
   <circle cx="64" cy="60" r="60" fill="url(#glow)"/>
-  <ellipse cx="64" cy="118" rx="36" ry="5" fill="#000" opacity="0.4"/>
-  <path d="M44 117 L40 42 Q41 16 64 11 Q87 16 88 42 L84 117 Z" fill="url(#stone)" stroke="#b08d57" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M48 112 L45 44 Q46 24 64 19" fill="none" stroke="#5b4a33" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="64" cy="64" r="25" fill="none" stroke="#e6c36f" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="146 11"/>
-  <circle cx="64" cy="64" r="25" fill="none" stroke="#fff3cc" stroke-width="1" opacity="0.5" stroke-dasharray="146 11"/>
-  <circle cx="64" cy="27" r="5" fill="#ffd98a" stroke="#2a2016" stroke-width="1.5"/>
-  <rect x="61" y="31" width="6" height="8" fill="#6b4a2a" stroke="#2a2016" stroke-width="1.5"/>
-  <rect x="49" y="38" width="30" height="6" rx="2" fill="#e6c36f" stroke="#2a2016" stroke-width="1.5"/>
-  <path d="M59.5 44 L68.5 44 L68.5 94 L64 108 L59.5 94 Z" fill="url(#blade)" stroke="#2a2016" stroke-width="1.5" stroke-linejoin="round"/>
-  <path d="M64 48 L64 90" stroke="#9a7838" stroke-width="1.2" opacity="0.8"/>
+  <ellipse cx="64" cy="122" rx="40" ry="5" fill="#000000" opacity="0.5"/>
+
+  <!-- the point breaks into the dark: faint gold rays -->
+  <g stroke="#e6c36f" stroke-linecap="round" opacity="0.35">
+    <line x1="64" y1="18" x2="64" y2="4" stroke-width="1.4"/>
+    <line x1="64" y1="18" x2="50" y2="8" stroke-width="1"/>
+    <line x1="64" y1="18" x2="78" y2="8" stroke-width="1"/>
+  </g>
+
+  <!-- the Oathstone: a broad slab, cracked where the sword came out -->
+  <path d="M22 122 L30 84 L98 84 L106 122 Z" fill="url(#stone)" stroke="#9c7c48" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M34 118 L39 90 L50 90" fill="none" stroke="#4e3e2a" stroke-width="2" stroke-linecap="round"/>
+  <path d="M64 84 L60 96 L66 104 L61 118" fill="none" stroke="#ff8a2a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7" filter="url(#soft)"/>
+  <path d="M64 84 L60 96 L66 104 L61 118" fill="none" stroke="#ffc27a" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- the ring of the Oath, opened at the top: the way up -->
+  <path d="M43 36 A26 26 0 1 0 85 36" fill="none" stroke="#e6c36f" stroke-width="4" stroke-linecap="round"/>
+  <path d="M43 36 A26 26 0 1 0 85 36" fill="none" stroke="#fff3cc" stroke-width="1" stroke-linecap="round" opacity="0.45"/>
+  <path d="M43 36 L38 28 M85 36 L90 28" stroke="#e6c36f" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- the sword, rising -->
+  <path d="M58.5 78 L69.5 78 L69.5 30 L64 12 L58.5 30 Z" fill="url(#blade)" stroke="#1a140d" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M60.5 30 L64 18 L67.5 30 L67.5 56 L60.5 56 Z" fill="url(#bladeTip)"/>
+  <path d="M64 32 L64 74" stroke="#6f5527" stroke-width="1.2" opacity="0.8"/>
+  <rect x="48" y="76" width="32" height="7" rx="2.5" fill="#d9b25c" stroke="#1a140d" stroke-width="1.5"/>
+  <rect x="61" y="83" width="6" height="7" fill="#5a3f24" stroke="#1a140d" stroke-width="1.2"/>
+  <circle cx="64" cy="93" r="4.5" fill="#e6c36f" stroke="#1a140d" stroke-width="1.5"/>
+
+  <!-- a few embers, low -->
+  <g fill="#ffb347">
+    <circle cx="44" cy="72" r="1.4" opacity="0.7"/>
+    <circle cx="86" cy="64" r="1.2" opacity="0.6"/>
+    <circle cx="92" cy="48" r="1.1" opacity="0.4"/>
+    <circle cx="38" cy="54" r="0.9" opacity="0.4"/>
+  </g>
 </svg>
