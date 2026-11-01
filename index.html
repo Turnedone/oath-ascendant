@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="mark.svg" />
-    <script type="module" crossorigin src="/oath-ascendant/assets/main-CqeQbVqi.js"></script>
-    <link rel="stylesheet" crossorigin href="/oath-ascendant/assets/main-DgXTh4Fk.css">
+    <script type="module" crossorigin src="/oath-ascendant/assets/main-VI8knbbH.js"></script>
+    <link rel="stylesheet" crossorigin href="/oath-ascendant/assets/main-FmQKsXLI.css">
   </head>
   <body>
     <div id="splash"><img class="sp-mark" src="mark.svg" alt="" /><div class="sp-title">Oath Ascendant</div><div class="sp-line">The Oath is waiting</div><div class="sp-bar"><div></div></div></div>
@@ -49,8 +49,10 @@
           <div class="plaque-region" id="place-region"></div>
           <div class="place-name" id="place-name">—</div>
           <div class="place-status" id="place-status"></div>
+          <div class="place-hint" id="place-hint" hidden></div>
           <div class="travel-bar" id="travel-bar" hidden><div class="travel-fill" id="travel-fill"></div></div>
         </section>
+        <button id="enter-town" class="enter-town btn primary" type="button" hidden><span class="enter-label"></span><span class="key">E</span></button>
         <section id="boss-bar" class="boss-bar" hidden>
           <div class="boss-name"><span id="boss-name"></span></div>
           <div class="bar boss"><div id="boss-fill" class="fill"></div><span id="boss-text" class="bar-text"></span></div>
@@ -121,7 +123,7 @@
               <div class="panel-label">Town</div>
               <h2 id="town-name">Riverford</h2>
             </div>
-            <p class="muted-small">Trade, store your loot, then take the Oathstones or step back out.</p>
+            <p class="muted-small">Trade, store what you found, then take the Oathstones or step back out.</p>
             <button id="leave-town" class="btn primary">Leave town</button>
             <button id="town-fold" class="panel-close" title="Fold the window away and see the town">×</button>
           </div>
@@ -131,7 +133,7 @@
             <button class="town-tab" data-town-tab="smith" title="Forge recipes and Soulstones (enchanting is in your Gear panel)">Smith</button>
             <button class="town-tab" data-town-tab="trainer" title="Classes and skills">Trainer</button>
             <button class="town-tab" data-town-tab="board">Bounties</button>
-            <button class="town-tab" data-town-tab="tower" title="The Tower of Bosses: floors that stay cleared through every rebirth">Tower</button>
+            <button class="town-tab" data-town-tab="tower" title="The Tower under the split sky: floors stay cleared through every rebirth">Tower</button>
             <button class="town-tab" data-town-tab="stash">Stash</button>
           </div>
           <div class="town-body" id="town-shop"></div>
@@ -150,7 +152,7 @@
 
         <!-- Hotbar: skills, then consumables; experience along the top -->
         <footer id="hotbar" class="hotbar">
-          <div class="xp-strip" title="Experience"><div id="xp-fill" class="xp-fill"></div><span id="xp-text" class="xp-text"></span></div>
+          <div class="xp-strip" title="Experience"><div id="xp-fill" class="xp-fill"></div><span id="xp-text" class="xp-text"></span><span id="xp-next" class="xp-next" title="What comes next, and how far"></span></div>
           <div class="frame slots bar2"><div id="bar2-slots" class="slot-group"></div></div>
           <div class="frame slots">
             <div id="skill-slots" class="slot-group"></div>
@@ -239,12 +241,17 @@
           <h4>Game</h4>
           <div class="sound-row"><label for="ui-scale" title="Auto follows the window's size">Interface size</label><select id="ui-scale"><option value="auto">Auto</option><option value="0.8">80%</option><option value="0.9">90%</option><option value="1">100%</option><option value="1.1">110%</option><option value="1.2">120%</option><option value="1.3">130%</option></select></div>
           <div class="sound-row"><label for="show-all" title="Every window and tab from the start, without the gradual introduction">Show everything</label><input id="show-all" type="checkbox" /></div>
+          <div class="sound-row"><label for="ui-look" title="How the panels, the bag and the buttons are dressed. Ledger is still being finished">Look</label><select id="ui-look"><option value="forge">Forge (iron)</option><option value="banner">Banner (cloth)</option><option value="ledger">Ledger (paper)</option><option value="classic">Classic</option></select></div>
+          <div class="sound-row"><label for="fx-level" title="Reduced: no sparks, dust, shake or flashes in a fight. Auto follows your system's reduce-motion setting">Fight effects</label><select id="fx-level"><option value="auto">Auto</option><option value="full">Full</option><option value="reduced">Reduced</option></select></div>
           <div class="settings-row"><a class="btn primary" href="https://discord.gg/VU4ZrdTVT" target="_blank" rel="noopener">Join our Discord: feedback, ideas, bug reports</a></div>
           <div class="settings-row"><button id="change-char" class="btn">Change character</button><button id="replay-intro" class="btn" title="The warden walks you through the basics again">Replay the introduction</button></div>
           <h4>Back up your save</h4>
           <p>Copy this text somewhere safe. Paste it back below to restore, or to move your Oathsworn to another browser.</p>
           <textarea id="save-export" readonly rows="4"></textarea>
           <div class="settings-row"><button id="save-copy" class="btn">Copy</button></div>
+          <h4>Playtest</h4>
+          <p>What happened to you, minute by minute, as a file for the designer. Nothing of your save is in it.</p>
+          <div class="settings-row"><button id="run-export" class="btn">Export my run</button><button id="run-reset" class="btn" title="Start the log over from now">Start the log over</button></div>
           <h4>Restore a save</h4>
           <textarea id="save-import" rows="4" placeholder="Paste a save here"></textarea>
           <div class="settings-row"><button id="save-load" class="btn primary">Load this save</button></div>
